@@ -3,17 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎬 AI情感短视频生成器（KlingAI + ElevenLabs）</title>
+  <title>AI情感视频生成器（KlingAI + ElevenLabs）</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>🎞️ AI情感短视频生成器 v13</h2>
-  <textarea id="textInput" placeholder="请输入你的情感文案..."></textarea>
-  <button id="generateBtn">开始生成</button>
+  <div class="container">
+    <h2>🧠 AI情感短视频生成器 v13</h2>
+    <p>输入一段情绪文字，系统将自动匹配语气与背景风格并生成视频。</p>
 
-  <div id="status"></div>
-  <video id="outputVideo" controls autoplay loop></video>
-  <a id="downloadLink" style="display:none;" download="ai_video.mp4">下载视频</a>
+    <textarea id="textInput" placeholder="请输入你的情感文字..."></textarea>
+    <br>
+    <button id="generateBtn">开始生成 🎬</button>
+
+    <div id="status"></div>
+
+    <video id="outputVideo" controls autoplay loop style="display:none; margin-top:20px;"></video>
+
+    <a id="downloadLink" style="display:none;" download="ai_video.mp4">⬇️ 下载视频</a>
+  </div>
+
+  <footer>
+    <p style="margin-top:40px; font-size:12px; color:#999;">
+      Made by <a href="https://github.com/baofufulc" style="color:#ff99cc;">baofufulc</a>
+    </p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
