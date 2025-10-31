@@ -1,42 +1,125 @@
+/* === 全局基础样式 === */
 body {
-  font-family: "Microsoft YaHei", sans-serif;
-  background: black;
-  color: white;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+  color: #fff;
   text-align: center;
-  padding: 20px;
+  padding: 40px 10px;
+  margin: 0;
 }
 
+/* 标题样式 */
+h2 {
+  font-size: 28px;
+  color: #ff6699;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* 文本输入框 */
 textarea {
   width: 90%;
-  height: 120px;
-  margin-top: 20px;
-  border-radius: 10px;
-  padding: 10px;
+  height: 140px;
+  margin: 15px auto;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
   font-size: 16px;
-  background: #111;
-  color: white;
-  border: none;
+  padding: 12px;
+  outline: none;
+  resize: none;
+  transition: all 0.3s ease;
+  display: block;
 }
 
+textarea:focus {
+  border-color: #ff6699;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 8px rgba(255, 102, 153, 0.6);
+}
+
+/* 生成按钮 */
 button {
-  margin-top: 10px;
-  padding: 10px 25px;
-  border: none;
-  border-radius: 6px;
-  background-color: #ff3366;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-video {
-  width: 90%;
-  border-radius: 10px;
-  margin-top: 20px;
-  box-shadow: 0 0 20px rgba(255,255,255,0.2);
-}
-
-#status {
   margin-top: 15px;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #ff6699, #ff3366);
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 51, 102, 0.4);
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(255, 102, 153, 0.6);
+}
+
+/* 视频播放器 */
+video {
+  width: 92%;
+  border-radius: 12px;
+  margin-top: 25px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+  display: none;
+}
+
+/* 状态提示文字 */
+#status {
+  margin-top: 20px;
+  font-size: 15px;
   color: #ff99cc;
+  animation: fadeIn 0.8s ease;
+}
+
+/* 下载按钮 */
+a#downloadLink {
+  display: none;
+  text-decoration: none;
+  color: white;
+  background: linear-gradient(90deg, #00c9ff, #92fe9d);
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-top: 20px;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+a#downloadLink:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 201, 255, 0.4);
+}
+
+/* 响应式适配（手机端优化） */
+@media (max-width: 600px) {
+  h2 {
+    font-size: 22px;
+  }
+
+  textarea {
+    height: 120px;
+    font-size: 15px;
+  }
+
+  button {
+    font-size: 15px;
+    padding: 10px 20px;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
