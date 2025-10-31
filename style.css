@@ -1,0 +1,30 @@
+body {
+  font-family: "Microsoft YaHei";
+  background: black;
+  color: white;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+textarea {
+  width: 90%;
+  height: 100px;
+  font-size: 16px;
+  border-radius: 10px;
+  margin-top: 20px;
+  padding: 10px;
+}
+button {
+  margin-top: 15px;
+  padding: 10px 25px;
+  font-size: 16px;
+  border-radius: 8px;
+  background: #ff3366;
+  color: white;
+  border: none;
+}
+video {
+  width: 90%;
+  border-radius: 12px;
+  margin-top: 20px;
+}
