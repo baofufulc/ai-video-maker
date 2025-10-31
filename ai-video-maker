@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎬 AI 情感短视频生成器</title>
+  <title>🎬 AI情感短视频生成器（KlingAI + ElevenLabs）</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>🎞️ AI情感短视频生成器</h2>
-  <textarea id="textInput" placeholder="请输入你想说的话..."></textarea>
-  <button id="generateBtn">生成视频</button>
+  <h2>🎞️ AI情感短视频生成器 v13</h2>
+  <textarea id="textInput" placeholder="请输入你的情感文案..."></textarea>
+  <button id="generateBtn">开始生成</button>
+
   <div id="status"></div>
-  <video id="outputVideo" controls></video>
+  <video id="outputVideo" controls autoplay loop></video>
   <a id="downloadLink" style="display:none;" download="ai_video.mp4">下载视频</a>
 
   <script src="script.js"></script>
