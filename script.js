@@ -4,94 +4,70 @@ const statusDiv = document.getElementById("status");
 const link = document.getElementById("downloadLink");
 
 btn.onclick = async () => {
-  const text = document.getElementById("textInput").value.trim();
+  const text = document.getElementById("inputText").value.trim();
   if (!text) return alert("请输入文字内容！");
-  statusDiv.innerText = "🎤 正在分析情感并生成语音...";
+  statusDiv.innerText = "🧠 正在分析文字情感...";
   video.src = "";
   link.style.display = "none";
 
   try {
-    // 1️⃣ 文本情绪分析
+    // 🎯 1. 文本情绪自动分析
     let mood = "平静";
-    if (text.match(/孤独|寂寞|心酸|想念/)) mood = "忧伤";
-    else if (text.match(/梦想|拼命|奋斗|勇敢/)) mood = "励志";
-    else if (text.match(/希望|阳光|美好|温暖/)) mood = "温暖";
-    else if (text.match(/夜|回忆|遗憾/)) mood = "怀旧";
+    if (text.match(/痛|伤|泪|孤独|难过|失去|心碎/)) mood = "伤感";
+    else if (text.match(/梦想|努力|坚持|希望|成功/)) mood = "励志";
+    else if (text.match(/想念|回忆|曾经|爱过/)) mood = "思念";
+    else if (text.match(/告别|再见|离开|放下/)) mood = "告别";
 
-    // 2️⃣ 背景类型
-    let bgType = "自然风景";
-    if (mood === "忧伤" || mood === "怀旧") bgType = "夜景";
-    else if (mood === "励志") bgType = "城市";
-    else if (mood === "温暖") bgType = "海边";
+    statusDiv.innerText = `🎵 检测到情感：${mood}，正在生成语音...`;
 
-    // 3️⃣ 根据情绪选择男声 Voice ID（ElevenLabs）
-    const voiceMap = {
-      "平静": "pNInz6obpgDQGcFmaJgB", // 柔和语气
-      "励志": "TxGEqnHWrfWFTfGW9XjX", // 坚定有力
-      "忧伤": "ErXwobaYiN019PkySvjV", // 低沉悲伤
-      "温暖": "VR6AewLTigWG4xSOukaG", // 温柔
-      "怀旧": "nPczCjzI2devNBz1zQrb"  // 稍沉稳
-    };
-    const voice_id = voiceMap[mood];
-
-    // 4️⃣ 调用 ElevenLabs 中文男声生成语音
-    const elevenResp = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}`, {
+    // 🎤 2. 使用 HuggingFace 免费语音（中文男声）
+    const ttsUrl = "https://api-inference.huggingface.co/models/facebook/mms-tts-zh";
+    const ttsResp = await fetch(ttsUrl, {
       method: "POST",
-      headers: {
-        "xi-api-key": "GbMQTKbKAaynPhLfDArMMybmhYANaeea",  // ← ✅ 你的 ElevenLabs Key
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        text,
-        model_id: "eleven_multilingual_v2",
-        voice_settings: { stability: 0.45, similarity_boost: 0.9 }
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ inputs: text })
     });
 
-    if (!elevenResp.ok) throw new Error("语音生成失败，请检查 ElevenLabs Key");
-
-    const audioBlob = await elevenResp.blob();
+    if (!ttsResp.ok) throw new Error("语音生成失败！");
+    const audioBlob = await ttsResp.blob();
     const audioUrl = URL.createObjectURL(audioBlob);
 
-    statusDiv.innerText = `🎬 检测为【${mood}】情绪，正在生成${bgType}背景视频...`;
+    statusDiv.innerText = `🎬 已生成语音，正在生成背景视频（${mood}风格）...`;
 
-    // 5️⃣ 调用 KlingAI 生成竖屏视频
-    const klingResp = await fetch("https://api.klingai.cn/v1/video/generate", {
+    // 🌄 3. 自动选择背景类型
+    let bgType = "夜景";
+    if (mood === "励志") bgType = "城市";
+    else if (mood === "伤感") bgType = "雨夜";
+    else if (mood === "思念") bgType = "夕阳";
+    else if (mood === "告别") bgType = "旅途";
+
+    // 🪄 4. 生成视频（调用 KlingAI）
+    const klingResp = await fetch("https://api.klingai.com/generate", {
       method: "POST",
-      headers: {
-        "Authorization": "Bearer AfreDn3pFyRJdHC8yTnrPEkGdEtrePTa", // ← ✅ 你的 KlingAI Key
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        prompt: `一段${bgType}的真实竖屏视频，氛围与以下文字匹配：${text}`,
-        aspect_ratio: "9:16"
+        prompt: `${mood}风格的${bgType}视频，搭配中文旁白`,
+        voice: "male",
+        audio_url: audioUrl
       })
     });
 
-    if (!klingResp.ok) throw new Error("KlingAI 请求失败，请检查 Key 或额度");
-
+    if (!klingResp.ok) throw new Error("KlingAI 视频生成失败！");
     const klingData = await klingResp.json();
+    const videoUrl = klingData.video_url || klingData.data?.video_url;
 
-    // ✅ 修正点：KlingAI 返回的数据结构不同，防止 video_url undefined
-    const bgVideoUrl = klingData?.data?.video_url || klingData?.video_url;
-    if (!bgVideoUrl) throw new Error("未返回视频URL，请检查 KlingAI 返回内容");
-
-    statusDiv.innerText = "🧩 视频与语音合成中...";
-
-    // 6️⃣ 同步播放视频 + 音频（改进点：视频加载后再播放音频）
-    video.src = bgVideoUrl;
-    video.onloadeddata = () => {
-      video.play();
-      const audio = new Audio(audioUrl);
-      audio.play();
-    };
-
-    // 7️⃣ 下载链接
-    link.href = bgVideoUrl;
-    link.style.display = "inline";
+    // 🧩 5. 播放 & 提供下载
+    if (!videoUrl) throw new Error("视频链接生成失败！");
+    video.src = videoUrl;
+    video.style.display = "block";
+    link.href = videoUrl;
+    link.download = "AI情感短视频.mp4";
+    link.innerText = "⬇️ 下载视频";
+    link.style.display = "block";
     statusDiv.innerText = "✅ 视频生成完成！";
+
   } catch (err) {
-    console.error("错误详情：", err);
-    statusDiv.innerText = "❌ 出现错误：" + err.message;
+    console.error(err);
+    statusDiv.innerText = "❌ 生成失败：" + err.message;
   }
 };
