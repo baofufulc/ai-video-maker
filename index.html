@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI情感视频生成器（KlingAI + ElevenLabs）</title>
+  <title>AI情感短视频生成器 v15</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h2>🧠 AI情感短视频生成器 v13</h2>
-    <p>输入一段情绪文字，系统将自动匹配语气与背景风格并生成视频。</p>
+  <h1>🧠 AI情感短视频生成器 v15</h1>
+  <p>输入一段情感文字，系统将自动匹配语音与背景风格并生成视频</p>
 
-    <textarea id="textInput" placeholder="请输入你的情感文字..."></textarea>
-    <br>
-    <button id="generateBtn">开始生成 🎬</button>
+  <textarea id="inputText" placeholder="例如：后来我才明白，不是所有的遇见都有结果..."></textarea>
+  <br>
+  <button id="generateBtn">开始生成 💖</button>
 
-    <div id="status"></div>
+  <div id="status"></div>
 
-    <video id="outputVideo" controls autoplay loop style="display:none; margin-top:20px;"></video>
+  <video id="outputVideo" controls></video>
+  <br>
+  <a id="downloadLink" style="display:none" download>⬇️ 下载视频</a>
 
-    <a id="downloadLink" style="display:none;" download="ai_video.mp4">⬇️ 下载视频</a>
+  <div id="footer">
+    <p>Made by <a href="https://github.com/baofufulc" target="_blank">baofufulc</a></p>
   </div>
 
-  <footer>
-    <p style="margin-top:40px; font-size:12px; color:#999;">
-      Made by <a href="https://github.com/baofufulc" style="color:#ff99cc;">baofufulc</a>
-    </p>
-  </footer>
+  <div id="loading" class="hidden">
+    <div class="spinner"></div>
+    <p>视频正在生成中，请稍候...</p>
+  </div>
 
   <script src="script.js"></script>
 </body>
