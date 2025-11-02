@@ -1,4 +1,6 @@
-// AI情感短视频生成器（使用 Cloudflare Worker 代理）
+// 🎬 AI 情感短视频生成器 v15 (Cloudflare 版修正版)
+// 适配 Cloudflare Pages + Workers 环境
+// Made by baofufulc & aimingwang08
 
 const btn = document.getElementById("generateBtn");
 const video = document.getElementById("outputVideo");
@@ -6,8 +8,14 @@ const statusDiv = document.getElementById("status");
 const link = document.getElementById("downloadLink");
 const loading = document.getElementById("loading");
 
-// 你的 Worker 地址👇（替换成你自己的）
-const WORKER_BASE = "https://ai-video-maker-api.<你的子域>.workers.dev";
+// 💡 自动识别后端 Worker 地址
+const BASE =
+  (typeof WORKER_BASE !== "undefined" && WORKER_BASE) ||
+  "https://tts-ai-worker.aimingwang08.workers.dev";
+
+// 🔑 API 密钥（推荐放在 Worker 中，不要放这里）
+const HUGGINGFACE_KEY = "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";
+const KLINGAI_KEY = "AfreDn3pFyRJdHC8yTnrPEkGdEtrePTa";
 
 btn.onclick = async () => {
   const text = document.getElementById("inputText").value.trim();
@@ -35,36 +43,39 @@ btn.onclick = async () => {
 
     statusDiv.innerText = `🎧 检测到情绪：${mood}，生成语音中...`;
 
-    // 🗣️ 调用 Worker 的 /tts 生成语音
-    const ttsResp = await fetch(`${WORKER_BASE}/tts`, {
+    // 🗣️ 调用 HuggingFace 生成语音（通过 Worker 转发）
+    const ttsResp = await fetch(`${BASE}/tts`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ text, key: HUGGINGFACE_KEY }),
     });
 
     if (!ttsResp.ok) throw new Error("语音生成失败！");
-    const audioBlob = await ttsResp.blob();
-    const audioUrl = URL.createObjectURL(audioBlob);
+    const ttsData = await ttsResp.json();
+    if (!ttsData.audioUrl) throw new Error("未返回语音 URL！");
+    const audioUrl = ttsData.audioUrl;
 
-    statusDiv.innerText = "🎬 语音生成完成，正在生成视频...";
+    statusDiv.innerText = "🎬 语音生成完成，合成视频中...";
 
-    // 🎥 调用 Worker 的 /video 生成视频
-    const klingResp = await fetch(`${WORKER_BASE}/video`, {
+    // 🎥 调用 KlingAI 生成视频（同样通过 Worker 转发）
+    const videoResp = await fetch(`${BASE}/video`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        prompt: `${mood}风格的${bgType}视频，配合旁白：${text}`,
-        voice: "male",
-        audio_url: audioUrl,
+        text,
+        mood,
+        bgType,
+        audioUrl,
+        key: KLINGAI_KEY,
       }),
     });
 
-    if (!klingResp.ok) throw new Error("KlingAI 视频生成失败！");
-    const klingData = await klingResp.json();
-    const videoUrl = klingData.video_url || klingData.data?.video_url;
+    if (!videoResp.ok) throw new Error("KlingAI 视频生成失败！");
+    const videoData = await videoResp.json();
+    const videoUrl = videoData.videoUrl;
     if (!videoUrl) throw new Error("未返回视频链接！");
 
-    // ✅ 显示视频
+    // ✅ 显示视频和下载链接
     video.src = videoUrl;
     video.style.display = "block";
     link.href = videoUrl;
@@ -72,7 +83,7 @@ btn.onclick = async () => {
     link.innerText = "⬇️ 下载视频";
     link.style.display = "block";
 
-    statusDiv.innerText = "✅ 视频生成完成，请下载。";
+    statusDiv.innerText = "✅ 视频生成完成，点击下方下载。";
   } catch (err) {
     console.error(err);
     statusDiv.innerText = `❌ 出错：${err.message}`;
