@@ -1,33 +1,73 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI情感短视频生成器 v15</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎬 AI情感短视频生成器 v15</title>
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: "Microsoft YaHei", sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    textarea {
+      width: 90%;
+      height: 100px;
+      border-radius: 10px;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #ff4da6;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 10px 25px;
+      margin-top: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 15px;
+    }
+    #loading {
+      margin-top: 15px;
+    }
+    video {
+      display: none;
+      width: 90%;
+      margin-top: 20px;
+      border-radius: 12px;
+    }
+    a {
+      display: none;
+      color: #00ffff;
+      margin-top: 10px;
+      text-decoration: none;
+    }
+  </style>
+
+  <!-- 环境变量注入 -->
+  <script>
+    window.WORKER_BASE = "{{ WORKER_BASE }}";
+  </script>
 </head>
+
 <body>
-  <h1>🧠 AI情感短视频生成器 v15</h1>
-  <p>输入一段情感文字，系统将自动匹配语音与背景风格并生成视频</p>
+  <h2>💡 AI情感短视频生成器 v15</h2>
+  <p>输入一段情感文字，系统将自动配音与背景风格并生成视频</p>
 
-  <textarea id="inputText" placeholder="例如：后来我才明白，不是所有的遇见都有结果..."></textarea>
-  <br>
-  <button id="generateBtn">开始生成 💖</button>
-
+  <textarea id="inputText" placeholder="我为什么要拼命挣钱，因为我没有背景，没有依靠..."></textarea>
+  <br />
+  <button id="generateBtn">开始生成🎬</button>
   <div id="status"></div>
-
+  <div id="loading" class="hidden">视频正在生成中，请稍候...</div>
   <video id="outputVideo" controls></video>
-  <br>
-  <a id="downloadLink" style="display:none" download>⬇️ 下载视频</a>
-
-  <div id="footer">
-    <p>Made by <a href="https://github.com/baofufulc" target="_blank">baofufulc</a></p>
-  </div>
-
-  <div id="loading" class="hidden">
-    <div class="spinner"></div>
-    <p>视频正在生成中，请稍候...</p>
-  </div>
+  <a id="downloadLink" href="#" download>⬇️ 下载视频</a>
 
   <script src="script.js"></script>
 </body>
